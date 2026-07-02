@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.logline.example/contracts/agents/agent-memory-write-request.schema.json",
+  "title": "LogLine Agent Memory Write Request Contract",
+  "description": "Validates the machine boundary for agent-memory-write-request. It validates shape and boundary only; it does not expose private selection, scoring, activation, ranking, or sealability algorithms.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "kind",
+    "version",
+    "visibility",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v?\\\\d+\\\\.\\\\d+\\\\.\\\\d+|draft$"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "partner",
+        "private",
+        "mixed",
+        "internal"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "revoked"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-z0-9_:-]+$"
+    },
+    "receipt_required": {
+      "type": "boolean"
+    },
+    "receipt_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "doubt_state": {
+      "type": "string",
+      "enum": [
+        "known",
+        "supported",
+        "inferred",
+        "contested",
+        "missing",
+        "stale",
+        "policy_blocked",
+        "human_required",
+        "unsafe_to_act",
+        "safe_to_continue"
+      ]
+    },
+    "activation_state": {
+      "type": "string",
+      "enum": [
+        "registered",
+        "readable",
+        "projectable",
+        "actionable",
+        "effect_intended",
+        "airlock_required",
+        "committed",
+        "revoked",
+        "expired"
+      ]
+    },
+    "policy_blockers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "source_boundary_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "projection_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revocation_state": {
+      "type": "string",
+      "enum": [
+        "not_revoked",
+        "revoked",
+        "superseded",
+        "expired",
+        "unknown"
+      ]
+    },
+    "AUX": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "agent_memory_write_request_payload": {
+      "type": "object",
+      "description": "Contract-specific payload. Implementations MUST NOT use it to bypass boundary, doubt, activation, policy, receipt, custody, or revocation rules.",
+      "additionalProperties": true
+    },
+    "must": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "must_not": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "failure_mode": {
+      "type": "string",
+      "enum": [
+        "deny",
+        "hold_as_draft",
+        "human_required",
+        "unsafe_to_act",
+        "no_safe_anchor",
+        "receipt_required"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "kind": {
+          "const": "agent_memory_write_request"
+        }
+      }
+    }
+  ],
+  "x-logline-editorial": {
+    "purpose": "Prevent plausible language from crossing a boundary without shape, proof, state, and receipt.",
+    "invariants": [
+      "Admission is not activation.",
+      "A projection is a bounded reasoning surface, not truth itself.",
+      "Doubt must never collapse silently into confidence.",
+      "Every external effect emits a receipt.",
+      "If no safe anchor exists, declare insufficient grounding."
+    ]
+  }
+}
